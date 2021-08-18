@@ -64,6 +64,26 @@ btn_9 = QPushButton('9')
 
 ######################################
 ######################################
+# TECLAS DE ATALHO
+btn_soma.setShortcut("+")
+btn_subtracao.setShortcut("-")
+btn_multiplicacao.setShortcut("*")
+btn_divisao.setShortcut("/")
+btn_igual.setShortcut("=")
+
+btn_0.setShortcut("0")
+btn_1.setShortcut("1")
+btn_2.setShortcut("2")
+btn_3.setShortcut("3")
+btn_4.setShortcut("4")
+btn_5.setShortcut("5")
+btn_6.setShortcut("6")
+btn_7.setShortcut("7")
+btn_8.setShortcut("8")
+btn_9.setShortcut("9")
+
+######################################
+######################################
 
 # Criando o Layout
 layout = QtGui.QGridLayout()
@@ -92,10 +112,61 @@ layout.addWidget(btn_8, 7,1)
 layout.addWidget(btn_9, 7,2)
 layout.addWidget(btn_0, 8,1)
 
-
-
-
 layout.addWidget(label_Autor, 9,0,6,4)
+######################################
+######################################
+# VARIAVEIS GLOBAIS
+
+var1 = 0
+var2 = 0
+
+######################################
+######################################
+# FUNCOES E ROTINAS (SLOTS)
+
+def escreve_valor(numero):
+    # Configura a escrita do numero no app
+    
+    # Obtem o numero atual e adiciona o numero clicado
+    conteudo_lineedit = lineedit_resultado.text() + numero
+    lineedit_resultado.setText(conteudo_lineedit)
+    
+def salva_var():
+        
+    # Identificar se é a variavel 1 ou 2 sendo escrita
+    
+    # Adicionar verificacao de tamanho de numero
+    var1 = lineedit_resultado.text()
+    
+    # Limpa valore escritos
+    lineedit_resultado.setText("")
+    
+
+def mensagemTeste():
+    QMessageBox.about(window, "Title", "Message")
+
+######################################
+######################################
+# SIGNALS AND SLOTS
+
+#Exemplo de conextao do signal a um slot
+#widget.signal.connect(slot_function)
+btn_0.clicked.connect(lambda: escreve_valor(btn_0.text()))
+btn_1.clicked.connect(lambda: escreve_valor(btn_1.text()))
+btn_2.clicked.connect(lambda: escreve_valor(btn_2.text()))
+btn_3.clicked.connect(lambda: escreve_valor(btn_3.text()))
+btn_4.clicked.connect(lambda: escreve_valor(btn_4.text()))
+btn_5.clicked.connect(lambda: escreve_valor(btn_5.text()))
+btn_6.clicked.connect(lambda: escreve_valor(btn_6.text()))
+btn_7.clicked.connect(lambda: escreve_valor(btn_7.text()))
+btn_8.clicked.connect(lambda: escreve_valor(btn_8.text()))
+btn_9.clicked.connect(lambda: escreve_valor(btn_9.text()))
+
+btn_igual.clicked.connect(lambda: salva_var())
+btn_soma.clicked.connect(lambda: salva_var())
+btn_subtracao.clicked.connect(lambda: salva_var())
+btn_divisao.clicked.connect(lambda: salva_var())
+btn_multiplicacao.clicked.connect(lambda: salva_var())
 
 
 ######################################
@@ -107,4 +178,4 @@ window.show()
 
 ## Start the Qt event loop
 app.setQuitOnLastWindowClosed(True)
-app.exec_()
+app.exec()
