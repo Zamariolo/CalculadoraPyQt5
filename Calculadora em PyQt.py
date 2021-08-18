@@ -24,7 +24,7 @@ window.setStyleSheet("background-color: #f4f4f4;")
 
 ######################################
 ######################################
-# Inserindo os elementos que compoem a aplicacao
+# Inserindo os elementos (widgets) da aplicacao
 
 #Titulo
 label_titulo = QtGui.QLabel("<h1 style='color:#4286f4'>CALCULADORA EM PyQt5</h1>")
@@ -41,7 +41,6 @@ lineedit_resultado.setStyleSheet("color: #4286f4; font:30px; background-color:#F
 lineedit_resultado.setAlignment(QtCore.Qt.AlignRight)
 lineedit_resultado.setReadOnly(True)
 
-
 # Botoes
 btn_soma = QPushButton('+')
 btn_subtracao = QPushButton('-')
@@ -49,6 +48,9 @@ btn_multiplicacao = QPushButton('x')
 btn_divisao = QPushButton('/')
 btn_igual = QPushButton("=")
 btn_igual.setSizePolicy(QSizePolicy(QSizePolicy.Minimum,QSizePolicy.MinimumExpanding))
+
+btn_decimal = QPushButton('.')
+btn_limpa = QPushButton('C')
 
 btn_0 = QPushButton('0')
 btn_1 = QPushButton('1')
@@ -70,6 +72,9 @@ btn_subtracao.setShortcut("-")
 btn_multiplicacao.setShortcut("*")
 btn_divisao.setShortcut("/")
 btn_igual.setShortcut("=")
+
+btn_decimal.setShortcut('.')
+btn_limpa.setShortcut('c')
 
 btn_0.setShortcut("0")
 btn_1.setShortcut("1")
@@ -99,7 +104,10 @@ layout.addWidget(btn_soma, 4,0)
 layout.addWidget(btn_subtracao, 4,1)
 layout.addWidget(btn_multiplicacao, 4,2)
 layout.addWidget(btn_divisao, 4,3)
-layout.addWidget(btn_igual, 5,3,4,1)
+layout.addWidget(btn_igual, 6,3,3,1)
+
+layout.addWidget(btn_decimal, 8,2)
+layout.addWidget(btn_limpa, 5,3)
 
 layout.addWidget(btn_1, 5,0)
 layout.addWidget(btn_2, 5,1)
@@ -161,6 +169,8 @@ btn_6.clicked.connect(lambda: escreve_valor(btn_6.text()))
 btn_7.clicked.connect(lambda: escreve_valor(btn_7.text()))
 btn_8.clicked.connect(lambda: escreve_valor(btn_8.text()))
 btn_9.clicked.connect(lambda: escreve_valor(btn_9.text()))
+
+btn_decimal.clicked.connect(lambda: escreve_valor(btn_decimal.text()))
 
 btn_igual.clicked.connect(lambda: salva_var())
 btn_soma.clicked.connect(lambda: salva_var())
