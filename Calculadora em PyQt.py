@@ -9,6 +9,7 @@ Created on Wed Aug 18 13:41:33 2021
 from PyQt5 import QtGui, QtCore  # (the example applies equally well to PySide2)
 import pyqtgraph as pg
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QKeySequence
 from operacoes_matematicas import *
 
 ######################################
@@ -35,6 +36,7 @@ label_titulo.setAlignment(QtCore.Qt.AlignCenter)
 #Autor
 label_Autor = QtGui.QLabel("<p>Autor: Vinícius Zamariola - zzamariola@gmail.com</p>")
 label_Autor.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom )
+label_operacao = QtGui.QLabel("<p>- | -</p>")
 
 # Resultados
 lineedit_resultado = QtGui.QLineEdit("")
@@ -45,13 +47,14 @@ lineedit_resultado.setReadOnly(True)
 # Botoes
 btn_soma = QPushButton('+')
 btn_subtracao = QPushButton('-')
-btn_multiplicacao = QPushButton('x')
+btn_multiplicacao = QPushButton('*')
 btn_divisao = QPushButton('/')
 btn_igual = QPushButton("=")
 btn_igual.setSizePolicy(QSizePolicy(QSizePolicy.Minimum,QSizePolicy.MinimumExpanding))
 
 btn_decimal = QPushButton('.')
 btn_limpa = QPushButton('C')
+btn_backspace = QPushButton("Backspace")
 
 btn_0 = QPushButton('0')
 btn_1 = QPushButton('1')
@@ -73,9 +76,11 @@ btn_subtracao.setShortcut("-")
 btn_multiplicacao.setShortcut("*")
 btn_divisao.setShortcut("/")
 btn_igual.setShortcut("=")
+btn_igual.setShortcut("Enter")
 
 btn_decimal.setShortcut('.')
 btn_limpa.setShortcut('c')
+btn_backspace.setShortcut("Backspace")
 
 btn_0.setShortcut("0")
 btn_1.setShortcut("1")
@@ -87,6 +92,11 @@ btn_6.setShortcut("6")
 btn_7.setShortcut("7")
 btn_8.setShortcut("8")
 btn_9.setShortcut("9")
+
+#enter_click = QShortcut(QKeySequence("Enter"))
+#enter_click.activated.connect(calculate("="))
+
+
 
 ######################################
 ######################################
@@ -100,26 +110,28 @@ window.setGeometry(400,50,400,600)
 # Configurando o layout
 layout.addWidget(label_titulo, 1,0,1,4)
 layout.addWidget(lineedit_resultado, 2,0,2,4)
+layout.addWidget(label_operacao, 4,0,1,4)
 
-layout.addWidget(btn_soma, 4,0)
-layout.addWidget(btn_subtracao, 4,1)
-layout.addWidget(btn_multiplicacao, 4,2)
-layout.addWidget(btn_divisao, 4,3)
+layout.addWidget(btn_soma, 5,0)
+layout.addWidget(btn_subtracao, 5,1)
+layout.addWidget(btn_multiplicacao, 5,2)
+layout.addWidget(btn_divisao, 5,3)
 layout.addWidget(btn_igual, 6,3,3,1)
 
-layout.addWidget(btn_decimal, 8,2)
+layout.addWidget(btn_decimal, 9,2)
 layout.addWidget(btn_limpa, 5,3)
+layout.addWidget(btn_backspace, 9,0)
 
-layout.addWidget(btn_1, 5,0)
-layout.addWidget(btn_2, 5,1)
-layout.addWidget(btn_3, 5,2)
-layout.addWidget(btn_4, 6,0)
-layout.addWidget(btn_5, 6,1)
-layout.addWidget(btn_6, 6,2)
-layout.addWidget(btn_7, 7,0)
-layout.addWidget(btn_8, 7,1)
-layout.addWidget(btn_9, 7,2)
-layout.addWidget(btn_0, 8,1)
+layout.addWidget(btn_1, 6,0)
+layout.addWidget(btn_2, 6,1)
+layout.addWidget(btn_3, 6,2)
+layout.addWidget(btn_4, 7,0)
+layout.addWidget(btn_5, 7,1)
+layout.addWidget(btn_6, 7,2)
+layout.addWidget(btn_7, 8,0)
+layout.addWidget(btn_8, 8,1)
+layout.addWidget(btn_9, 8,2)
+layout.addWidget(btn_0, 9,1)
 
 layout.addWidget(label_Autor, 9,0,6,4)
 ######################################
@@ -128,10 +140,26 @@ layout.addWidget(label_Autor, 9,0,6,4)
 
 var1 = None
 var2 = None
+last_operacao = None
 
 ######################################
 ######################################
 # FUNCOES E ROTINAS (SLOTS)
+
+def clear():
+    global var1
+    global var2
+    global last_operacao
+
+    var1 = None
+    var2 = None
+    last_operacao = None
+
+    lineedit_resultado.setText("")
+    label_operacao.setText("%s  %s  %s" %(var1, last_operacao, var2))
+
+def apaga_valor():
+    lineedit_resultado.setText(lineedit_resultado.text()[:-1])
 
 def escreve_valor(numero):
     # Configura a escrita do numero no app
@@ -144,24 +172,58 @@ def calculate(operacao):
 
     global var1
     global var2
+    global last_operacao
         
-    # Identificar se é a variavel 1 ou 2 sendo escrita
-
 
     # Se for a variavel 1
     if (var1 == None):
         var1 = lineedit_resultado.text();
+        # Limpa valore escritos
+        lineedit_resultado.setText("")
+
+        if (operacao!="="):
+            last_operacao = operacao
+            label_operacao.setText("%s  %s  %s" %(var1, last_operacao, "?"))
 
     # Se for a variavel 2 fazer a operacao
-    else:
-        var2 = lineedit_resultado.text()
-        QMessageBox.about(window, "Operação clicada", operacao)
+    elif (var2==None):
 
+        if (operacao!="="):
+            last_operacao = operacao
+            label_operacao.setText("%s  %s  %s" %(var1, last_operacao, "?"))
+
+        elif operacao=="=":
+            var2 = lineedit_resultado.text()
+            label_operacao.setText("%s  %s  %s" %(var1, last_operacao, var2))
+
+            if (last_operacao=="+"):
+                var1 = soma(float(var1), float(var2))
+
+            elif (last_operacao=="-"):
+                var1 = soma(float(var1), -float(var2))
+
+            elif (last_operacao=="*"):
+                var1 = multiplicacao(float(var1), float(var2))
+
+            elif (last_operacao=="/"):
+                var1 = multiplicacao(float(var1), 1/float(var2))
+
+        
+            lineedit_resultado.setText(str(var1))
+
+    else:
+        # Uma conta ja foi feita, devemos resetar para continuar as operacoes
+        last_operacao = operacao
+        var2 = None
+
+        label_operacao.setText("%s  %s  %s" %(var1, last_operacao, var2))
+        lineedit_resultado.setText("")
+
+        
 
     
     # Adicionar verificacao de tamanho de numero  
-    # Limpa valore escritos
-    lineedit_resultado.setText("")
+
     
 
 def mensagemTeste():
@@ -191,6 +253,9 @@ btn_soma.clicked.connect(lambda: calculate(btn_soma.text()))
 btn_subtracao.clicked.connect(lambda: calculate(btn_subtracao.text()))
 btn_divisao.clicked.connect(lambda: calculate(btn_divisao.text()))
 btn_multiplicacao.clicked.connect(lambda: calculate(btn_multiplicacao.text()))
+
+btn_limpa.clicked.connect(lambda: clear())
+btn_backspace.clicked.connect(lambda: apaga_valor())
 
 
 ######################################
