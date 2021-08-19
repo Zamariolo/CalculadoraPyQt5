@@ -9,6 +9,7 @@ Created on Wed Aug 18 13:41:33 2021
 from PyQt5 import QtGui, QtCore  # (the example applies equally well to PySide2)
 import pyqtgraph as pg
 from PyQt5.QtWidgets import *
+from operacoes_matematicas import *
 
 ######################################
 ## Iniciando a aplicacao (uma por aplicacao)
@@ -36,7 +37,7 @@ label_Autor = QtGui.QLabel("<p>Autor: Vinícius Zamariola - zzamariola@gmail.com
 label_Autor.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom )
 
 # Resultados
-lineedit_resultado = QtGui.QLineEdit("0")
+lineedit_resultado = QtGui.QLineEdit("")
 lineedit_resultado.setStyleSheet("color: #4286f4; font:30px; background-color:#FCFCFC; text-align: right");
 lineedit_resultado.setAlignment(QtCore.Qt.AlignRight)
 lineedit_resultado.setReadOnly(True)
@@ -125,8 +126,8 @@ layout.addWidget(label_Autor, 9,0,6,4)
 ######################################
 # VARIAVEIS GLOBAIS
 
-var1 = 0
-var2 = 0
+var1 = None
+var2 = None
 
 ######################################
 ######################################
@@ -139,13 +140,26 @@ def escreve_valor(numero):
     conteudo_lineedit = lineedit_resultado.text() + numero
     lineedit_resultado.setText(conteudo_lineedit)
     
-def salva_var():
+def calculate(operacao):
+
+    global var1
+    global var2
         
     # Identificar se é a variavel 1 ou 2 sendo escrita
+
+
+    # Se for a variavel 1
+    if (var1 == None):
+        var1 = lineedit_resultado.text();
+
+    # Se for a variavel 2 fazer a operacao
+    else:
+        var2 = lineedit_resultado.text()
+        QMessageBox.about(window, "Operação clicada", operacao)
+
+
     
-    # Adicionar verificacao de tamanho de numero
-    var1 = lineedit_resultado.text()
-    
+    # Adicionar verificacao de tamanho de numero  
     # Limpa valore escritos
     lineedit_resultado.setText("")
     
@@ -172,11 +186,11 @@ btn_9.clicked.connect(lambda: escreve_valor(btn_9.text()))
 
 btn_decimal.clicked.connect(lambda: escreve_valor(btn_decimal.text()))
 
-btn_igual.clicked.connect(lambda: salva_var())
-btn_soma.clicked.connect(lambda: salva_var())
-btn_subtracao.clicked.connect(lambda: salva_var())
-btn_divisao.clicked.connect(lambda: salva_var())
-btn_multiplicacao.clicked.connect(lambda: salva_var())
+btn_igual.clicked.connect(lambda: calculate(btn_igual.text()))
+btn_soma.clicked.connect(lambda: calculate(btn_soma.text()))
+btn_subtracao.clicked.connect(lambda: calculate(btn_subtracao.text()))
+btn_divisao.clicked.connect(lambda: calculate(btn_divisao.text()))
+btn_multiplicacao.clicked.connect(lambda: calculate(btn_multiplicacao.text()))
 
 
 ######################################
